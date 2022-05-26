@@ -331,6 +331,7 @@ func (state *accessKnownLeader) next(bo *retry.Backoffer, selector *replicaSelec
 }
 
 func (state *accessKnownLeader) onSendFailure(bo *retry.Backoffer, selector *replicaSelector, cause error) {
+	logutil.BgLogger().Info("try accessKnowLeader")
 	liveness := selector.checkLiveness(bo, selector.targetReplica())
 	if liveness != reachable && len(selector.replicas) > 1 && selector.regionCache.enableForwarding {
 		selector.state = &accessByKnownProxy{leaderIdx: state.leaderIdx}
@@ -393,6 +394,7 @@ func (state *tryFollower) onSendSuccess(selector *replicaSelector) {
 }
 
 func (state *tryFollower) onSendFailure(bo *retry.Backoffer, selector *replicaSelector, cause error) {
+	logutil.BgLogger().Info("try follower")
 	if selector.checkLiveness(bo, selector.targetReplica()) != reachable {
 		selector.invalidateReplicaStore(selector.targetReplica(), cause)
 	}
@@ -424,6 +426,7 @@ func (state *accessByKnownProxy) next(bo *retry.Backoffer, selector *replicaSele
 }
 
 func (state *accessByKnownProxy) onSendFailure(bo *retry.Backoffer, selector *replicaSelector, cause error) {
+	logutil.BgLogger().Info("trying accessByKnownProxy")
 	selector.state = &tryNewProxy{leaderIdx: state.leaderIdx}
 	if selector.checkLiveness(bo, selector.proxyReplica()) != reachable {
 		selector.invalidateReplicaStore(selector.proxyReplica(), cause)
@@ -489,6 +492,7 @@ func (state *tryNewProxy) onSendSuccess(selector *replicaSelector) {
 }
 
 func (state *tryNewProxy) onSendFailure(bo *retry.Backoffer, selector *replicaSelector, cause error) {
+	logutil.BgLogger().Info("trying tryNewProxy")
 	if selector.checkLiveness(bo, selector.proxyReplica()) != reachable {
 		selector.invalidateReplicaStore(selector.proxyReplica(), cause)
 	}
@@ -561,6 +565,7 @@ func (state *accessFollower) next(bo *retry.Backoffer, selector *replicaSelector
 }
 
 func (state *accessFollower) onSendFailure(bo *retry.Backoffer, selector *replicaSelector, cause error) {
+	logutil.BgLogger().Info("trying accessFollower")
 	if selector.checkLiveness(bo, selector.targetReplica()) != reachable {
 		selector.invalidateReplicaStore(selector.targetReplica(), cause)
 	}
