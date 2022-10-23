@@ -66,9 +66,10 @@ import (
 
 const (
 	// DefaultScanBatchSize is the default scan batch size.
-	DefaultScanBatchSize = 256
-	batchGetSize         = 5120
-	maxTimestamp         = math.MaxUint64
+	DefaultScanBatchSize        = 256
+	DefaultBatchGetSubBatchSize = 16
+	batchGetSize                = 5120
+	maxTimestamp                = math.MaxUint64
 )
 
 // IsoLevel is the transaction's isolation level.
@@ -346,8 +347,9 @@ func (s *KVSnapshot) batchGetSingleRegion(bo *retry.Backoffer, batch batchKeys, 
 	for {
 		s.mu.RLock()
 		req := tikvrpc.NewReplicaReadRequest(tikvrpc.CmdBatchGet, &kvrpcpb.BatchGetRequest{
-			Keys:    pending,
-			Version: s.version,
+			Keys:      pending,
+			Version:   s.version,
+			BatchSize: DefaultBatchGetSubBatchSize,
 		}, s.mu.replicaRead, &s.replicaReadSeed, kvrpcpb.Context{
 			Priority:         s.priority.ToPB(),
 			NotFillCache:     s.notFillCache,
