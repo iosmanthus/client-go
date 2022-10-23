@@ -66,11 +66,12 @@ import (
 
 const (
 	// DefaultScanBatchSize is the default scan batch size.
-	DefaultScanBatchSize        = 256
-	DefaultBatchGetSubBatchSize = 16
-	batchGetSize                = 5120
-	maxTimestamp                = math.MaxUint64
+	DefaultScanBatchSize = 256
+	batchGetSize         = 5120
+	maxTimestamp         = math.MaxUint64
 )
+
+var DefaultBatchGetSubBatchSize = 16
 
 // IsoLevel is the transaction's isolation level.
 type IsoLevel kvrpcpb.IsolationLevel
