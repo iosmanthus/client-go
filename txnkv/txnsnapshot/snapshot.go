@@ -71,7 +71,7 @@ const (
 	maxTimestamp         = math.MaxUint64
 )
 
-var DefaultBatchGetSubBatchSize = 16
+var DefaultBatchGetSubBatchSize uint64 = 16
 
 // IsoLevel is the transaction's isolation level.
 type IsoLevel kvrpcpb.IsolationLevel
