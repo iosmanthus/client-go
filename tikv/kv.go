@@ -486,15 +486,6 @@ func (s *KVStore) GetClusterID() uint64 {
 	return s.clusterID
 }
 
-// GetCodec returns store's codec manner
-func (s *KVStore) GetCodec() Codec {
-	c := NewCodecV1(ModeTxn)
-	if cli, ok := s.pdClient.(*CodecPDClient); ok {
-		c = cli.GetCodec()
-	}
-	return c
-}
-
 func (s *KVStore) getSafeTS(storeID uint64) uint64 {
 	safeTS, ok := s.safeTSMap.Load(storeID)
 	if !ok {
