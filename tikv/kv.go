@@ -486,12 +486,13 @@ func (s *KVStore) GetClusterID() uint64 {
 	return s.clusterID
 }
 
-func (s *KVStore) GetAPIVersion() kvrpcpb.APIVersion {
-	v := kvrpcpb.APIVersion_V1
+// GetCodec returns store's codec manner
+func (s *KVStore) GetCodec() Codec {
+	c := NewCodecV1(ModeTxn)
 	if cli, ok := s.pdClient.(*CodecPDClient); ok {
-		v = cli.GetCodec().GetAPIVersion()
+		c = cli.GetCodec()
 	}
-	return v
+	return c
 }
 
 func (s *KVStore) getSafeTS(storeID uint64) uint64 {
