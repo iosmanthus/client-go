@@ -26,6 +26,8 @@ const (
 	NulSpaceID KeyspaceID = 0xffffffff
 )
 
+// ParseKeyspaceID parses a keyspace id from an API V2 key.
+// If the format of the key is not in API V2, it returns and error.
 func ParseKeyspaceID(b []byte) (KeyspaceID, error) {
 	if len(b) < keyspacePrefixLen || (b[0] != rawModePrefix && b[0] != txnModePrefix) {
 		return 0, errors.Errorf("unsupported key %s", b)
