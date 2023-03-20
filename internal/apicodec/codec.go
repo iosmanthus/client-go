@@ -2,7 +2,6 @@ package apicodec
 
 import (
 	"encoding/binary"
-
 	"github.com/pingcap/errors"
 	"github.com/pingcap/kvproto/pkg/kvrpcpb"
 	"github.com/tikv/client-go/v2/tikvrpc"
@@ -97,8 +96,10 @@ func attachAPICtx(c Codec, req *tikvrpc.Request) (*tikvrpc.Request, error) {
 	switch r.Type {
 	case tikvrpc.CmdMPPTask:
 		mpp := *r.DispatchMPPTask()
-		mpp.Meta.KeyspaceId = ctx.KeyspaceId
-		mpp.Meta.ApiVersion = ctx.ApiVersion
+		meta := *mpp.Meta
+		meta.KeyspaceId = ctx.KeyspaceId
+		meta.ApiVersion = ctx.ApiVersion
+		mpp.Meta = &meta
 		r.Req = &mpp
 	case tikvrpc.CmdCompact:
 		compact := *r.Compact()
