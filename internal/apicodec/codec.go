@@ -4,7 +4,9 @@ import (
 	"encoding/binary"
 	"github.com/pingcap/errors"
 	"github.com/pingcap/kvproto/pkg/kvrpcpb"
+	"github.com/pingcap/log"
 	"github.com/tikv/client-go/v2/tikvrpc"
+	"go.uber.org/zap"
 )
 
 type (
@@ -99,6 +101,7 @@ func attachAPICtx(c Codec, req *tikvrpc.Request) (*tikvrpc.Request, error) {
 		meta := *mpp.Meta
 		meta.KeyspaceId = ctx.KeyspaceId
 		meta.ApiVersion = ctx.ApiVersion
+		log.Warn("attach api ctx", zap.Uint32("keyspace_id", meta.KeyspaceId), zap.String("api_version", meta.ApiVersion.String()), zap.Any("mpp", mpp)))
 		mpp.Meta = &meta
 		r.Req = &mpp
 	case tikvrpc.CmdCompact:
